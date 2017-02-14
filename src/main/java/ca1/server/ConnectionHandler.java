@@ -7,13 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class ConnectionHandler implements Runnable {
 
     private Server server;
     private Socket connection;
+    private boolean active = true;
 
     public ConnectionHandler(Server server, Socket connection) {
 
@@ -26,40 +26,64 @@ public class ConnectionHandler implements Runnable {
     public void run() {
 
         OutputStream output = null;
+        
         try {
+            
             output = connection.getOutputStream();
             InputStream input = connection.getInputStream();
+
             //Use PrintWriter instead
             PrintWriter writer = new PrintWriter(connection.getOutputStream(), true);
             // Read whatever comes in
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            String line = reader.readLine();
-            String[] splitString = line.split("#", 2);
-            String command = line.substring(0, line.indexOf("#"));
-            String message = line.substring(line.indexOf("#") + 1);
-            switch (command) {
-                
-                case "LOGIN":
-                    
-                    writer.println("OK#Christian#Anna");
-                    break;
-                    
-               
-                    
-                default:
-                    
-                    writer.println("Wrong command!");
-                    break;
-                    
+
+            while (active) {
+
+                String line = reader.readLine();
+                String[] splitString = line.split("#", 2);
+                String command = line.substring(0, line.indexOf("#"));
+                String message = line.substring(line.indexOf("#") + 1);
+                switch (command) {
+
+                    case "LOGIN":
+
+                        //Need to implement username check
+                        
+                        //Need to register user, and get list
+                        writer.println("OK#"+message+"#Anna");
+                        break;
+
+                    case "QUIT":
+
+                        active = false;
+                        break;
+
+                    default:
+
+                        writer.println("Wrong command!");
+                        break;
+
+                }
+
             }
+
         } catch (IOException ex) {
-            Logger.getLogger(ConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            System.out.println(ex.getMessage());
+
         } finally {
+
             try {
+
                 output.close();
+                connection.close();
+
             } catch (IOException ex) {
-                Logger.getLogger(ConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+                ex.getMessage();
+
             }
+
         }
 
     }
