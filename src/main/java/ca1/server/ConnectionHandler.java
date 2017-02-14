@@ -50,8 +50,9 @@ public class ConnectionHandler implements Runnable {
             reader = new BufferedReader(new InputStreamReader(input));
 
             while (active) {
-
+                
                 String line = reader.readLine();
+                
                 String command = line.substring(0, line.indexOf("#"));
                 String message = line.substring(line.indexOf("#") + 1);
 
@@ -60,7 +61,7 @@ public class ConnectionHandler implements Runnable {
                     case "LOGIN":
 
                         if (server.usernameTaken(message)) {
-                            
+
                             writer.println("FAIL");
 
                         } else {
@@ -98,6 +99,7 @@ public class ConnectionHandler implements Runnable {
 
                     case "QUIT":
 
+                        server.removeUser(this);
                         active = false;
                         break;
 
@@ -110,9 +112,13 @@ public class ConnectionHandler implements Runnable {
 
             }
 
-        } catch (IOException ex) {
+        } catch (StringIndexOutOfBoundsException | IOException ex) {
 
-            System.out.println(ex.getMessage());
+            //Dirty fix for checking if connection is lost
+            System.out.println("Connection lost or syntax error");
+            server.removeUser(this);
+            active = false;
+            
 
         } finally {
 

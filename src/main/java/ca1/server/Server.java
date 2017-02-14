@@ -61,8 +61,6 @@ public class Server {
 
             es.execute(new ConnectionHandler(this, connection));
 
-            //Move this to Connection handler
-            //connection.close();
         }
 
     }
@@ -76,7 +74,9 @@ public class Server {
         es.shutdown();
 
         try {
+
             es.awaitTermination(60, TimeUnit.SECONDS);
+
         } catch (InterruptedException ex) {
 
             System.out.println("Could not shut down all treads!" + ex.getMessage());
@@ -84,6 +84,12 @@ public class Server {
 
     }
 
+    /**
+     * Method used to add a user to the server.
+     *
+     * @param connection The connection object.
+     * @return A string of active users separated with #.
+     */
     public String addUser(ConnectionHandler connection) {
 
         //Register user to the userlist.
@@ -91,6 +97,23 @@ public class Server {
 
         //Now we need to remove ",".
         return userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#").replaceAll(",", "");
+
+    }
+
+    /**
+     * Method to announce that a new user has joined the server.
+     *
+     * @param connection The object of the new user.
+     */
+    public void announceNewUser(ConnectionHandler connection) {
+
+        userList.remove(connection.getUsername());
+
+        for (ConnectionHandler user : userList.values()) {
+
+            user.sendMessage("UPDATE#" + connection.getUsername());
+
+        }
 
     }
 
@@ -111,7 +134,7 @@ public class Server {
             }
 
         }
-        
+
         return false;
 
     }
@@ -125,7 +148,11 @@ public class Server {
 
         userList.remove(connection.getUsername());
 
-        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#").replaceAll(",", "");
+        for (ConnectionHandler user : userList.values()) {
+
+            user.sendMessage("DELETE#" + connection.getUsername());
+
+        }
 
     }
 
