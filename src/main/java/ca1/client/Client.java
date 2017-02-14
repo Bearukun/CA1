@@ -1,4 +1,4 @@
-package ca1_chat.client;
+package ca1.client;
 
 /**
  *
