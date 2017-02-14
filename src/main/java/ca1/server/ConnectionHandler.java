@@ -127,7 +127,7 @@ public class ConnectionHandler implements Runnable {
                 output.close();
                 writer.close();
                 connection.close();
-
+             
             } catch (IOException ex) {
 
                 ex.getMessage();
