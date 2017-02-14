@@ -6,13 +6,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
+
 
 public class Server {
 
     private static ExecutorService es = Executors.newCachedThreadPool();
-    
+
     private final String host;
     private final int port;
 
@@ -28,13 +28,13 @@ public class Server {
         Server server = new Server("localhost", 8081);
 
         try {
-            
+
             server.startServer();
-            
+
         } catch (IOException ex) {
-            
+
             System.out.println("Something went wrong: " + ex.getMessage());
-            
+
         }
 
     }
@@ -58,10 +58,26 @@ public class Server {
         while ((connection = socket.accept()) != null) {
 
             es.execute(new ConnectionHandler(this, connection));
-           
+
             //Move this to Connection handler
             //connection.close();
+        }
 
+    }
+
+    /**
+     * We need to implement this later
+     */
+    public void shutdownServer() {
+
+        //join on all threads
+        es.shutdown();
+
+        try {
+            es.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+
+            System.out.println("Could not shut down all treads!" + ex.getMessage());
         }
 
     }
