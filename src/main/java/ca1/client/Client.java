@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,9 +18,9 @@ import java.net.Socket;
  */
 public class Client {
     
-    private final String host;
-    private final int port;
-    private Socket clientSocket;
+    private static String host, userName;
+    private static int port;
+    private  static Socket clientSocket;
 
     public Client(String host, int port) {
         this.host = host;
@@ -26,14 +29,14 @@ public class Client {
 
 
 
-    public void open() throws IOException {
+    public static void open() throws IOException {
         clientSocket = new Socket();
         clientSocket.connect(new InetSocketAddress(host, port));
         System.out.println("Client connected to server on port " + port);
     }
 
     
-     public void sendMessage(String message) throws IOException {
+     public static void sendMessage(String message) throws IOException {
         // Write to the server
         OutputStream output = clientSocket.getOutputStream();
         PrintWriter writer = new PrintWriter(output);
@@ -41,7 +44,7 @@ public class Client {
         writer.flush();
     }
      
-        public String readMessage() throws IOException {
+        public static String readMessage() throws IOException {
         // Read from the server
         InputStream input = clientSocket.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -51,8 +54,59 @@ public class Client {
         }
         return fromServer;
     }
-    public static void main(String[] args) {
         
+        //Terminal GUI
+        
+        public static void startLogin(){
+           Scanner sca = new Scanner(System.in);
+           
+            
+            //IP
+            //Please enter the IP 
+            System.out.println("Please enter the HOST-addresse");
+            host = sca.nextLine();
+            System.out.println("Selected server: " + host);
+            
+           
+            System.out.println("Please enter your name");
+            userName = sca.nextLine();
+            //Please enter your name
+            //Name
+            //LOGIN#[USERNAME]
+            
+            
+            
+            
+            
+        }
+        
+        //People Connected
+        
+        //Connected [IP]
+        
+        
+    public static void main(String[] args) {
+      startLogin();
+            
+            
+        Client client = new Client(host, 8081);
+        
+        try {
+            
+            client.open(); 
+            client.sendMessage("LOGIN#"+userName);
+            client.sendMessage("Hello there!!!!");
+            String message = client.readMessage();
+            System.out.println(message);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //client.sendMessage("====");
+      
+        // client.sendMessage("UPPER#Hello World");
+        //client.sendMessage("LOWER#Hello World");
+        //     client.sendMessage("REVERSE#abcd");
+//       client.sendMessage("TRANSLATE#hund");
         
         
         
