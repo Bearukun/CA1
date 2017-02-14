@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Client for connecting a user to a (Chat) Server
  *
  * @author
  */
@@ -25,17 +26,35 @@ public class Client {
 
     static Scanner sca = new Scanner(System.in);
 
+    /**
+     * Method that takes 2 parameters to be used to connect the Socket to a
+     * server
+     *
+     * @param host String
+     * @param port int
+     */
     public Client(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    /**
+     * Method that confimes that connection has been made to a server
+     *
+     * @throws IOException
+     */
     public static void open() throws IOException {
         clientSocket = new Socket();
         clientSocket.connect(new InetSocketAddress(host, port));
         System.out.println("Client connected to server on port " + port);
     }
 
+    /**
+     * Takes a String as a parameter and sends it as a message
+     *
+     * @param message String
+     * @throws IOException
+     */
     public static void sendMessage(String message) throws IOException {
         // Write to the server
         OutputStream output = clientSocket.getOutputStream();
@@ -44,6 +63,12 @@ public class Client {
         writer.flush();
     }
 
+    /**
+     * Method that returns a message as a String
+     *
+     * @return fromServer
+     * @throws IOException
+     */
     public static String readMessage() throws IOException {
         // Read from the server
         InputStream input = clientSocket.getInputStream();
@@ -56,6 +81,10 @@ public class Client {
     }
 
     //Terminal GUI
+    /**
+     * Method that ask the user to enter the Host-address Needs to return if
+     * "FAIL" is invoked due to duplicate error in connecting to server
+     */
     public static void manualConnectionSetup() {
         //IP
         //Please enter the IP 
@@ -67,6 +96,10 @@ public class Client {
 
     }
 
+    /**
+     * Method that ask user to enter a user name to be used in the chat Needs to
+     * return if "FAIL" is invoked due to duplicate user name already online
+     */
     public static void manualNameSetup() {
         //Please enter your name
         //Name
@@ -77,6 +110,12 @@ public class Client {
 
     }
 
+    /**
+     * Method that reads messages from the server and gives the user feedback
+     *
+     * @param feedbackMessage
+     * @throws IOException
+     */
     public static void feedback(String feedbackMessage) throws IOException {
         OutputStream output = null;
 
@@ -98,6 +137,8 @@ public class Client {
 
             switch (command) {
 
+                //Login succesfull 
+                //Display welcome message & online users
                 case "OK":
 
                     //Need to implement username check
@@ -108,14 +149,12 @@ public class Client {
 //                    String peopleOnline = message.replaceAll("#", " - ");
 //                    System.out.println("People currently online: " + peopleOnline);
                     
-                    //Display people online
+                    //Display people online / People Connected
                     String[] splitStrings = message.split("#");
                     System.out.println("People currently online: ");
                     for (int i = 0; i < splitStrings.length; i++) {
                         System.out.println(splitStrings[i]);
                     }
-                    
-                    
 
                     active = false;
                     break;
@@ -125,21 +164,32 @@ public class Client {
                     System.out.println("Goodbye!");
                     active = false;
                     break;
-                    
-                case "FAIL":    
-                    
+
+                case "FAIL":
+
                     System.out.println("Could not connect to Chat\n"
                             + " Something could be wrong with the client or server, "
                             + " or someone migt already be online with the selected User Name [" + userName + "]");
 
                     break;
-                    
-                    
+
                 case "UPDATE":
+                    
+                    System.out.println("UPDATE ACTION");
+
+                    break;
+
+                case "DELETE":
+                    
+                    System.out.println("DELETE ACTION");
+                    
+                case "MSG":
+                        
+                    System.out.println("MESSAGE ACTION");
                     
                     break;
                     
-                case "DELETE":
+                    
                 default:
 
                     //writer.println("Wrong command!");
@@ -161,7 +211,7 @@ public class Client {
 
     }
 
-    //People Connected
+    
     //Connected [IP]
     public static void main(String[] args) {
         manualConnectionSetup();
