@@ -21,6 +21,8 @@ public class Client {
     private static String host, userName;
     private static int port;
     private  static Socket clientSocket;
+    
+    static Scanner sca = new Scanner(System.in);
 
     public Client(String host, int port) {
         this.host = host;
@@ -57,27 +59,25 @@ public class Client {
         
         //Terminal GUI
         
-        public static void startLogin(){
-           Scanner sca = new Scanner(System.in);
-           
-            
+        public static void manualConnectionSetup(){
             //IP
             //Please enter the IP 
+            //Needs to loop until something is correctly typed
             System.out.println("Please enter the HOST-addresse");
             host = sca.nextLine();
             System.out.println("Selected server: " + host);
+            //sca.close();
             
-           
-            System.out.println("Please enter your name");
-            userName = sca.nextLine();
+        }
+        
+        public static void manualNameSetup(){
             //Please enter your name
             //Name
-            //LOGIN#[USERNAME]
-            
-            
-            
-            
-            
+            //Needs to loop until something is correctly typed
+            System.out.println("Please enter your name");
+            userName = sca.nextLine();
+            //sca.close();
+ 
         }
         
         //People Connected
@@ -86,7 +86,8 @@ public class Client {
         
         
     public static void main(String[] args) {
-      startLogin();
+     manualConnectionSetup();
+     manualNameSetup();
             
             
         Client client = new Client(host, 8081);
@@ -101,12 +102,7 @@ public class Client {
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //client.sendMessage("====");
-      
-        // client.sendMessage("UPPER#Hello World");
-        //client.sendMessage("LOWER#Hello World");
-        //     client.sendMessage("REVERSE#abcd");
-//       client.sendMessage("TRANSLATE#hund");
+
         
         
         
