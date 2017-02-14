@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class Server {
 
     private static ExecutorService es = Executors.newCachedThreadPool();
+    
+    private HashMap<String, ConnectionHandler> userList = new HashMap();
 
     private final String host;
     private final int port;
@@ -81,5 +84,29 @@ public class Server {
         }
 
     }
+    
+    
+    public String addUser(ConnectionHandler connection){
+        
+        //Register user to the userlist.
+        userList.put(connection.getUsername(), connection);
+        
+        //Return list of all logged in users;
+        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]","#");
+        
+        //Now we need to remove ",".
+        
+        return temp.replaceAll(",", "");
+        
+        
+    }
+    
+    public void removeUser(ConnectionHandler connection){
+        
+        
+        
+    }
+    
+
 
 }
