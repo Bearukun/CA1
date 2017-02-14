@@ -9,11 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-
 public class Server {
 
     private static ExecutorService es = Executors.newCachedThreadPool();
-    
+
     private HashMap<String, ConnectionHandler> userList = new HashMap();
 
     private final String host;
@@ -84,29 +83,57 @@ public class Server {
         }
 
     }
-    
-    
-    public String addUser(ConnectionHandler connection){
-        
+
+    public String addUser(ConnectionHandler connection) {
+
         //Register user to the userlist.
         userList.put(connection.getUsername(), connection);
-        
-        //Return list of all logged in users;
-        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]","#");
-        
-        //Now we need to remove ",".
-        
-        return temp.replaceAll(",", "");
-        
-        
-    }
-    
-    public void removeUser(ConnectionHandler connection){
-        
-        
-        
-    }
-    
 
+        //Return list of all logged in users;
+        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#");
+
+        //Now we need to remove ",".
+        return temp.replaceAll(",", "");
+
+    }
+
+    public void removeUser(ConnectionHandler connection) {
+
+    }
+
+    /**
+     * Method used to massage every client on the server.
+     * @param username
+     * @param message 
+     */
+    public void messageEveryone(String username, String message) {
+
+        for (ConnectionHandler user : userList.values()) {
+
+            user.sendMessage("MSG#" + username + "#" + message);
+
+        }
+
+    }
+
+    /**
+     * Method used to massage privately to a user.
+     * @param username Senders username.
+     * @param targetUsername Target username.
+     * @param message The message from the user. 
+     */
+    public void massageUser(String username, String targetUsername, String message) {
+
+        for (ConnectionHandler user : userList.values()) {
+
+            if(user.getUsername().equals(targetUsername)){
+                
+                user.sendMessage("MSG#" + username + "#" + message);
+                
+            }
+
+        }
+
+    }
 
 }
