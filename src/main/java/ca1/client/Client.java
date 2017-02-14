@@ -21,6 +21,8 @@ public class Client {
     private static String host, userName;
     private static int port;
     private  static Socket clientSocket;
+    private static boolean active = true;
+    
     
     static Scanner sca = new Scanner(System.in);
 
@@ -80,6 +82,78 @@ public class Client {
  
         }
         
+        public static void feedback(String feedbackMessage) throws IOException{
+            OutputStream output = null;
+        
+        try {
+            System.out.println("in here!");
+            output = clientSocket.getOutputStream();
+            InputStream input = clientSocket.getInputStream();
+
+            //Use PrintWriter instead
+            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+            // Read whatever comes in
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+            while (active) {
+                
+                System.out.println("In active!");
+                String line = reader.readLine();
+                System.out.println("Line is: " + line);
+                String[] splitString = line.split("#", 2);
+                String command = line.substring(0, line.indexOf("#"));
+                String message = line.substring(line.indexOf("#") + 1);
+                
+                
+                System.out.println("The message is: " + feedbackMessage);
+                switch (command) {
+
+                    case "OK":
+
+                        //Need to implement username check
+                        
+                        //Need to register user, and get list
+                        //writer.println("OK#"+message+"#Anna");
+                        System.out.println("nananananananananananananaa");
+                        writer.println("Nananananananananananananana");
+                        break;
+
+                    case "QUIT":
+
+                        active = false;
+                        break;
+
+                    default:
+
+                        writer.println("Wrong command!");
+                        break;
+
+                }
+
+            }
+
+        } catch (IOException ex) {
+
+            System.out.println(ex.getMessage());
+
+        } finally {
+
+            try {
+
+                output.close();
+                clientSocket.close();
+
+            } catch (IOException ex) {
+
+                ex.getMessage();
+
+            }
+
+        }
+        
+        
+        }
+        
         //People Connected
         
         //Connected [IP]
@@ -98,7 +172,11 @@ public class Client {
             client.sendMessage("LOGIN#"+userName);
             client.sendMessage("Hello there!!!!");
             String message = client.readMessage();
+            
+            
             System.out.println(message);
+            
+            feedback(message);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
