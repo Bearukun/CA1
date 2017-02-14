@@ -61,7 +61,6 @@ public class Server {
             socket.bind(new InetSocketAddress(host, port));
             
             logger.info("Server started listenin on port" + port);
-            System.out.println("Server listening on port " + port);
             
             // Wait for a connection
             Socket connection;
