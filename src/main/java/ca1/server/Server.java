@@ -4,14 +4,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Server {
 
     private static ExecutorService es = Executors.newCachedThreadPool();
+
+    private Logger logger = Logger.getLogger(Server.class.getName());
+    private FileHandler fh;
 
     private HashMap<String, ConnectionHandler> userList = new HashMap();
 
@@ -28,16 +36,7 @@ public class Server {
     public static void main(String[] args) {
 
         Server server = new Server("localhost", 8081);
-
-        try {
-
-            server.startServer();
-
-        } catch (IOException ex) {
-
-            System.out.println("Something went wrong: " + ex.getMessage());
-
-        }
+        server.startServer();
 
     }
 
@@ -46,21 +45,40 @@ public class Server {
      *
      * @throws IOException If network or I/O or something goes wrong.
      */
-    public void startServer() throws IOException {
+    public void startServer() {
 
-        // Create a new unbound socket
-        ServerSocket socket = new ServerSocket();
-        // Bind to a port number
-        socket.bind(new InetSocketAddress(host, port));
-
-        System.out.println("Server listening on port " + port);
-
-        // Wait for a connection
-        Socket connection;
-        while ((connection = socket.accept()) != null) {
-
-            es.execute(new ConnectionHandler(this, connection));
-
+        try {
+            //Cnfigure the logger with handler and formatter
+            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
+            fh = new FileHandler("log-" + format.format(Calendar.getInstance().getTime()) + ".log");
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+            
+            // Create a new unbound socket
+            ServerSocket socket = new ServerSocket();
+            // Bind to a port number
+            socket.bind(new InetSocketAddress(host, port));
+            
+            logger.info("Server started listenin on port" + port);
+            System.out.println("Server listening on port " + port);
+            
+            // Wait for a connection
+            Socket connection;
+            while ((connection = socket.accept()) != null) {
+                
+                es.execute(new ConnectionHandler(this, connection, logger));
+                
+            }
+            
+        } catch (IOException ex) {
+            
+            logger.info("I/O Error: " + ex.getMessage());
+            
+        } catch (SecurityException ex) {
+            
+            logger.info("Security Error: " + ex.getMessage());
+            
         }
 
     }
@@ -79,7 +97,8 @@ public class Server {
 
         } catch (InterruptedException ex) {
 
-            System.out.println("Could not shut down all treads!" + ex.getMessage());
+            logger.info("Error shutting down: " + ex.getMessage());
+
         }
 
     }
@@ -94,6 +113,9 @@ public class Server {
 
         //Register user to the userlist.
         userList.put(connection.getUsername(), connection);
+
+        //Add connection into the log
+        logger.info(connection.getUsername() + " connected to the server on ip: " + connection.getIpAddress());
 
         //Now we need to remove ",".
         return userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#").replaceAll(",", "");
@@ -147,6 +169,9 @@ public class Server {
     public void removeUser(ConnectionHandler connection) {
 
         userList.remove(connection.getUsername());
+
+        //Register disconnect into the log
+        logger.info(connection.getUsername() + " disconnected from the server from ip: " + connection.getIpAddress());
 
         for (ConnectionHandler user : userList.values()) {
 

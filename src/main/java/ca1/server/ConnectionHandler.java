@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class ConnectionHandler implements Runnable {
 
@@ -15,6 +16,7 @@ public class ConnectionHandler implements Runnable {
      */
     private Server server;
     private Socket connection;
+    private Logger logger;
 
     private OutputStream output = null;
     private PrintWriter writer;
@@ -22,6 +24,7 @@ public class ConnectionHandler implements Runnable {
 
     private boolean active = true;
     private String username = "";
+    private String ipAddress = "";
 
     /**
      * The constructor for the ConnectionHandler.
@@ -29,16 +32,18 @@ public class ConnectionHandler implements Runnable {
      * @param server
      * @param connection
      */
-    public ConnectionHandler(Server server, Socket connection) {
+    public ConnectionHandler(Server server, Socket connection, Logger logger) {
 
         this.server = server;
         this.connection = connection;
+        this.logger = logger;
 
     }
 
     @Override
     public void run() {
 
+        
         try {
 
             output = connection.getOutputStream();
@@ -68,6 +73,7 @@ public class ConnectionHandler implements Runnable {
 
                             //Register username in class.
                             username = message;
+                            ipAddress = connection.getInetAddress().toString();
 
                             //Register user in hashmap, and get logged in users.
                             String userList = server.addUser(this);
@@ -114,11 +120,9 @@ public class ConnectionHandler implements Runnable {
 
         } catch (StringIndexOutOfBoundsException | IOException ex) {
 
-            //Dirty fix for checking if connection is lost
-            System.out.println("Connection lost or syntax error");
+            logger.info("Error: " + ex.getMessage());
             server.removeUser(this);
             active = false;
-            
 
         } finally {
 
@@ -130,7 +134,7 @@ public class ConnectionHandler implements Runnable {
              
             } catch (IOException ex) {
 
-                ex.getMessage();
+                logger.info("Error: " + ex.getMessage());
 
             }
 
@@ -156,6 +160,12 @@ public class ConnectionHandler implements Runnable {
 
         return username;
 
+    }
+
+    public String getIpAddress() {
+        
+        return ipAddress;
+        
     }
 
 }
