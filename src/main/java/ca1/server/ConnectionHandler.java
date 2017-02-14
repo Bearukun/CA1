@@ -59,14 +59,23 @@ public class ConnectionHandler implements Runnable {
 
                     case "LOGIN":
 
-                        //Register username in class.
-                        username = message;
+                        if (server.usernameTaken(message)) {
+                            
+                            writer.println("FAIL");
 
-                        //Register user in hashmap, and get logged in users.
-                        String userList = server.addUser(this);
+                        } else {
 
-                        //Need to register user, and get list
-                        writer.println("OK" + userList.substring(0, userList.length() - 1));
+                            //Register username in class.
+                            username = message;
+
+                            //Register user in hashmap, and get logged in users.
+                            String userList = server.addUser(this);
+
+                            //Need to register user, and get list
+                            writer.println("OK" + userList.substring(0, userList.length() - 1));
+
+                        }
+
                         break;
 
                     case "MESSAGE":
@@ -94,7 +103,7 @@ public class ConnectionHandler implements Runnable {
 
                     default:
 
-                        writer.println("Wrong command!");
+                        writer.println("FAIL");
                         break;
 
                 }

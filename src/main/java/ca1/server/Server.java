@@ -89,22 +89,51 @@ public class Server {
         //Register user to the userlist.
         userList.put(connection.getUsername(), connection);
 
-        //Return list of all logged in users;
-        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#");
-
         //Now we need to remove ",".
-        return temp.replaceAll(",", "");
+        return userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#").replaceAll(",", "");
 
     }
 
+    /**
+     * Method used to check whether a username is taken or not.
+     *
+     * @param username The username to be checked.
+     * @return True if taken, false if not.
+     */
+    public boolean usernameTaken(String username) {
+
+        for (ConnectionHandler user : userList.values()) {
+
+            if (user.getUsername().equals(username)) {
+
+                return true;
+
+            }
+
+        }
+        
+        return false;
+
+    }
+
+    /**
+     * Method used to remove a user.
+     *
+     * @param connection The users ConnectionHandler.
+     */
     public void removeUser(ConnectionHandler connection) {
+
+        userList.remove(connection.getUsername());
+
+        String temp = userList.keySet().toString().replaceAll("[\\s\\[\\]]", "#").replaceAll(",", "");
 
     }
 
     /**
      * Method used to massage every client on the server.
+     *
      * @param username
-     * @param message 
+     * @param message
      */
     public void messageEveryone(String username, String message) {
 
@@ -118,18 +147,19 @@ public class Server {
 
     /**
      * Method used to massage privately to a user.
+     *
      * @param username Senders username.
      * @param targetUsername Target username.
-     * @param message The message from the user. 
+     * @param message The message from the user.
      */
     public void massageUser(String username, String targetUsername, String message) {
 
         for (ConnectionHandler user : userList.values()) {
 
-            if(user.getUsername().equals(targetUsername)){
-                
+            if (user.getUsername().equals(targetUsername)) {
+
                 user.sendMessage("MSG#" + username + "#" + message);
-                
+
             }
 
         }
