@@ -13,7 +13,13 @@ public class ConnectionHandler implements Runnable {
 
     private Server server;
     private Socket connection;
+    
+    private OutputStream output = null;
+    private PrintWriter writer;
+    private BufferedReader reader;
+    
     private boolean active = true;
+    private String username = "";
 
     public ConnectionHandler(Server server, Socket connection) {
 
@@ -25,7 +31,7 @@ public class ConnectionHandler implements Runnable {
     @Override
     public void run() {
 
-        OutputStream output = null;
+        
         
         try {
             
@@ -33,9 +39,9 @@ public class ConnectionHandler implements Runnable {
             InputStream input = connection.getInputStream();
 
             //Use PrintWriter instead
-            PrintWriter writer = new PrintWriter(connection.getOutputStream(), true);
+            writer = new PrintWriter(connection.getOutputStream(), true);
             // Read whatever comes in
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            reader = new BufferedReader(new InputStreamReader(input));
 
             while (active) {
 
@@ -47,10 +53,14 @@ public class ConnectionHandler implements Runnable {
 
                     case "LOGIN":
 
-                        //Need to implement username check
+                        //Register username in class.
+                        username = message;
+                        
+                        //Register user in hashmap, and get logged in users.
+                        String userList  = server.addUser(this);
                         
                         //Need to register user, and get list
-                        writer.println("OK#"+message+"#Anna");
+                        writer.println("OK"+userList.substring(0, userList.length()-1));
                         break;
 
                     case "QUIT":
@@ -87,5 +97,22 @@ public class ConnectionHandler implements Runnable {
         }
 
     }
+    
+    public void sendMessage(){
+        
+        
+        
+        
+    }
+    
 
+    public String getUsername() {
+        
+        return username;
+        
+    }
+
+    
+    
+    
 }
