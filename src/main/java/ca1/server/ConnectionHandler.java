@@ -90,6 +90,9 @@ public class ConnectionHandler implements Runnable {
 
                             //Need to register user, and get list
                             writer.println("OK" + userList.substring(0, userList.length() - 1));
+                            
+                            //Announce that the client has joined
+                            server.announceNewUser(this);
 
                         }
 
@@ -128,7 +131,7 @@ public class ConnectionHandler implements Runnable {
 
             }
 
-        } catch (StringIndexOutOfBoundsException | IOException ex) {
+        } catch (NullPointerException | IOException ex) {
 
             /**
              * Incase of a client just disconnects - then the while loop will

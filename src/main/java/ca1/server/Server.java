@@ -119,7 +119,7 @@ public class Server {
      * @param connection The connection object.
      * @return A string of active users separated with #.
      */
-    public String addUser(ConnectionHandler connection) {
+    public synchronized String addUser(ConnectionHandler connection) {
 
         //Register user to the userlist.
         userList.put(connection.getUsername(), connection);
@@ -133,13 +133,12 @@ public class Server {
     }
 
     /**
-     * Method to announce that a new user has joined the server.
+     * Method to announce that a new user has joined the server,
+     * to all clients.
      *
      * @param connection The object of the new user.
      */
-    public void announceNewUser(ConnectionHandler connection) {
-
-        userList.remove(connection.getUsername());
+    public synchronized void announceNewUser(ConnectionHandler connection) {
 
         for (ConnectionHandler user : userList.values()) {
 
@@ -157,7 +156,7 @@ public class Server {
      * @param username String containing the username to be checked.
      * @return True if taken, false if not.
      */
-    public boolean usernameTaken(String username) {
+    public synchronized boolean usernameTaken(String username) {
 
         for (ConnectionHandler user : userList.values()) {
 
@@ -179,7 +178,7 @@ public class Server {
      *
      * @param connection The users ConnectionHandler.
      */
-    public void removeUser(ConnectionHandler connection) {
+    public synchronized void removeUser(ConnectionHandler connection) {
 
         userList.remove(connection.getUsername());
 
@@ -200,7 +199,7 @@ public class Server {
      * @param username String containing the name of the user that sent the msg.
      * @param message String containing the massage to be sent to everyone.
      */
-    public void messageEveryone(String username, String message) {
+    public synchronized void messageEveryone(String username, String message) {
 
         for (ConnectionHandler user : userList.values()) {
 
@@ -217,7 +216,7 @@ public class Server {
      * @param targetUsername String containing the targets username.
      * @param message String containing the message from the user.
      */
-    public void massageUser(String username, String targetUsername, String message) {
+    public synchronized void massageUser(String username, String targetUsername, String message) {
 
         for (ConnectionHandler user : userList.values()) {
 
