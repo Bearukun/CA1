@@ -16,6 +16,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Server {
 
+    //Variables.
     private static ExecutorService es = Executors.newCachedThreadPool();
 
     private Logger logger = Logger.getLogger(Server.class.getName());
@@ -26,6 +27,11 @@ public class Server {
     private final String host;
     private final int port;
 
+    /**
+     * The constructor of the Server-class.
+     * @param host String defining on what IP the server will listen to. 
+     * @param port Integer defining the port-number. 
+     */
     public Server(String host, int port) {
 
         this.host = host;
@@ -33,6 +39,10 @@ public class Server {
 
     }
 
+    /**
+     * Main method, not much to be said. 
+     * @param args 
+     */
     public static void main(String[] args) {
 
         Server server = new Server("localhost", 8081);
@@ -41,9 +51,7 @@ public class Server {
     }
 
     /**
-     * Starts running the server.
-     *
-     * @throws IOException If network or I/O or something goes wrong.
+     * This method is used to start the server, and will configure the logger.
      */
     public void startServer() {
 
@@ -54,36 +62,37 @@ public class Server {
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
-            
+
             // Create a new unbound socket
             ServerSocket socket = new ServerSocket();
             // Bind to a port number
             socket.bind(new InetSocketAddress(host, port));
-            
+
             logger.info("Server started listenin on port" + port);
-            
+
             // Wait for a connection
             Socket connection;
             while ((connection = socket.accept()) != null) {
-                
+
                 es.execute(new ConnectionHandler(this, connection, logger));
-                
+
             }
-            
+
         } catch (IOException ex) {
-            
+
             logger.info("I/O Error: " + ex.getMessage());
-            
+
         } catch (SecurityException ex) {
-            
+
             logger.info("Security Error: " + ex.getMessage());
-            
+
         }
 
     }
 
     /**
-     * We need to implement this later
+     * Method to shut down the server, now a requirement for the assignment, but
+     * still a neat method to have.
      */
     public void shutdownServer() {
 
@@ -103,7 +112,9 @@ public class Server {
     }
 
     /**
-     * Method used to add a user to the server.
+     * Method used to add a user to the server. The connection-object of the
+     * user is put into the HashMap with its name as the Key-value and the
+     * connection object as the value.
      *
      * @param connection The connection object.
      * @return A string of active users separated with #.
@@ -139,9 +150,11 @@ public class Server {
     }
 
     /**
-     * Method used to check whether a username is taken or not.
+     * Method used to check whether a username is taken or not. Method loops
+     * through the HashMap and checks if it contains a user, with the desired
+     * username.
      *
-     * @param username The username to be checked.
+     * @param username String containing the username to be checked.
      * @return True if taken, false if not.
      */
     public boolean usernameTaken(String username) {
@@ -161,7 +174,8 @@ public class Server {
     }
 
     /**
-     * Method used to remove a user.
+     * Method used to remove a user. This method essentially removes the user
+     * from the HashMap containing active users.
      *
      * @param connection The users ConnectionHandler.
      */
@@ -183,8 +197,8 @@ public class Server {
     /**
      * Method used to massage every client on the server.
      *
-     * @param username
-     * @param message
+     * @param username String containing the name of the user that sent the msg.
+     * @param message String containing the massage to be sent to everyone.
      */
     public void messageEveryone(String username, String message) {
 
@@ -199,9 +213,9 @@ public class Server {
     /**
      * Method used to massage privately to a user.
      *
-     * @param username Senders username.
-     * @param targetUsername Target username.
-     * @param message The message from the user.
+     * @param username String containing the senders username.
+     * @param targetUsername String containing the targets username.
+     * @param message String containing the message from the user.
      */
     public void massageUser(String username, String targetUsername, String message) {
 
