@@ -58,6 +58,14 @@ public class ConnectionHandler implements Runnable {
                 
                 String line = reader.readLine();
                 
+                //Check for bad syntax
+                if(!line.contains("#")){
+                    
+                    writer.println("BAD SYNTAX");
+                    continue;
+                    
+                }
+                
                 String command = line.substring(0, line.indexOf("#"));
                 String message = line.substring(line.indexOf("#") + 1);
 
@@ -120,7 +128,7 @@ public class ConnectionHandler implements Runnable {
 
         } catch (StringIndexOutOfBoundsException | IOException ex) {
 
-            logger.info("Error: " + ex.getMessage());
+            logger.info("Connection terminated, reason: " + ex.getMessage());
             server.removeUser(this);
             active = false;
 
