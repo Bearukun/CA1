@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class ConnectionHandler implements Runnable {
 
@@ -15,6 +16,7 @@ public class ConnectionHandler implements Runnable {
      */
     private Server server;
     private Socket connection;
+    private Logger logger;
 
     private OutputStream output = null;
     private PrintWriter writer;
@@ -22,6 +24,7 @@ public class ConnectionHandler implements Runnable {
 
     private boolean active = true;
     private String username = "";
+    private String ipAddress = "";
 
     /**
      * The constructor for the ConnectionHandler.
@@ -29,16 +32,18 @@ public class ConnectionHandler implements Runnable {
      * @param server
      * @param connection
      */
-    public ConnectionHandler(Server server, Socket connection) {
+    public ConnectionHandler(Server server, Socket connection, Logger logger) {
 
         this.server = server;
         this.connection = connection;
+        this.logger = logger;
 
     }
 
     @Override
     public void run() {
 
+        
         try {
 
             output = connection.getOutputStream();
@@ -50,8 +55,9 @@ public class ConnectionHandler implements Runnable {
             reader = new BufferedReader(new InputStreamReader(input));
 
             while (active) {
-
+                
                 String line = reader.readLine();
+                
                 String command = line.substring(0, line.indexOf("#"));
                 String message = line.substring(line.indexOf("#") + 1);
 
@@ -59,14 +65,24 @@ public class ConnectionHandler implements Runnable {
 
                     case "LOGIN":
 
-                        //Register username in class.
-                        username = message;
+                        if (server.usernameTaken(message)) {
 
-                        //Register user in hashmap, and get logged in users.
-                        String userList = server.addUser(this);
+                            writer.println("FAIL");
 
-                        //Need to register user, and get list
-                        writer.println("OK" + userList.substring(0, userList.length() - 1));
+                        } else {
+
+                            //Register username in class.
+                            username = message;
+                            ipAddress = connection.getInetAddress().toString();
+
+                            //Register user in hashmap, and get logged in users.
+                            String userList = server.addUser(this);
+
+                            //Need to register user, and get list
+                            writer.println("OK" + userList.substring(0, userList.length() - 1));
+
+                        }
+
                         break;
 
                     case "MESSAGE":
@@ -89,21 +105,24 @@ public class ConnectionHandler implements Runnable {
 
                     case "QUIT":
 
+                        server.removeUser(this);
                         active = false;
                         break;
 
                     default:
 
-                        writer.println("Wrong command!");
+                        writer.println("FAIL");
                         break;
 
                 }
 
             }
 
-        } catch (IOException ex) {
+        } catch (StringIndexOutOfBoundsException | IOException ex) {
 
-            System.out.println(ex.getMessage());
+            logger.info("Error: " + ex.getMessage());
+            server.removeUser(this);
+            active = false;
 
         } finally {
 
@@ -112,10 +131,10 @@ public class ConnectionHandler implements Runnable {
                 output.close();
                 writer.close();
                 connection.close();
-
+             
             } catch (IOException ex) {
 
-                ex.getMessage();
+                logger.info("Error: " + ex.getMessage());
 
             }
 
@@ -141,6 +160,12 @@ public class ConnectionHandler implements Runnable {
 
         return username;
 
+    }
+
+    public String getIpAddress() {
+        
+        return ipAddress;
+        
     }
 
 }

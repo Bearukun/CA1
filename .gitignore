@@ -1,6 +1,9 @@
 
 # Created by https://www.gitignore.io/api/netbeans,macos,windows,maven,java
 
+#Log
+*.log
+
 ### Java ###
 *.class
 
