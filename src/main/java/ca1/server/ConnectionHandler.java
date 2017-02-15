@@ -27,10 +27,13 @@ public class ConnectionHandler implements Runnable {
     private String ipAddress = "";
 
     /**
-     * The constructor for the ConnectionHandler.
+     * The constructor of the ConnectionHandler class.
      *
-     * @param server
-     * @param connection
+     * @param server Takes a Server-class object.
+     * @param connection Takes a Socket-class object, in this case - the
+     * connection.
+     * @param logger Takes a Logger-class object, so that this class can write
+     * to the log.
      */
     public ConnectionHandler(Server server, Socket connection, Logger logger) {
 
@@ -43,7 +46,6 @@ public class ConnectionHandler implements Runnable {
     @Override
     public void run() {
 
-        
         try {
 
             output = connection.getOutputStream();
@@ -55,17 +57,17 @@ public class ConnectionHandler implements Runnable {
             reader = new BufferedReader(new InputStreamReader(input));
 
             while (active) {
-                
+
                 String line = reader.readLine();
-                
+
                 //Check for bad syntax
-                if(!line.contains("#")){
-                    
+                if (!line.contains("#")) {
+
                     writer.println("BAD SYNTAX");
                     continue;
-                    
+
                 }
-                
+
                 String command = line.substring(0, line.indexOf("#"));
                 String message = line.substring(line.indexOf("#") + 1);
 
@@ -88,6 +90,9 @@ public class ConnectionHandler implements Runnable {
 
                             //Need to register user, and get list
                             writer.println("OK" + userList.substring(0, userList.length() - 1));
+                            
+                            //Announce that the client has joined
+                            server.announceNewUser(this);
 
                         }
 
@@ -126,8 +131,13 @@ public class ConnectionHandler implements Runnable {
 
             }
 
-        } catch (StringIndexOutOfBoundsException | IOException ex) {
+        } catch (NullPointerException | IOException ex) {
 
+            /**
+             * Incase of a client just disconnects - then the while loop will
+             * throw an Exception. The ConnectionHandler will catch it here, log
+             * the incident and remove the user from the userList in server.
+             */
             logger.info("Connection terminated, reason: " + ex.getMessage());
             server.removeUser(this);
             active = false;
@@ -139,7 +149,7 @@ public class ConnectionHandler implements Runnable {
                 output.close();
                 writer.close();
                 connection.close();
-             
+
             } catch (IOException ex) {
 
                 logger.info("Error: " + ex.getMessage());
@@ -152,6 +162,8 @@ public class ConnectionHandler implements Runnable {
 
     /**
      * Method used to send a message to the user.
+     *
+     * @param message String containing the message to be sent.
      */
     public void sendMessage(String message) {
 
@@ -160,7 +172,7 @@ public class ConnectionHandler implements Runnable {
     }
 
     /**
-     * Method for retrieving username.
+     * Method for retrieving the username.
      *
      * @return A string containing the username.
      */
@@ -170,10 +182,15 @@ public class ConnectionHandler implements Runnable {
 
     }
 
+    /**
+     * Method for retrieving the IP address.
+     *
+     * @return
+     */
     public String getIpAddress() {
-        
+
         return ipAddress;
-        
+
     }
 
 }
