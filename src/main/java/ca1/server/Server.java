@@ -49,8 +49,8 @@ public class Server {
 
         try {
             //Cnfigure the logger with handler and formatter
-            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
-            fh = new FileHandler("log-" + format.format(Calendar.getInstance().getTime()) + ".log");
+            SimpleDateFormat format = new SimpleDateFormat("d-M_HHmmss");
+            fh = new FileHandler("server-" + format.format(Calendar.getInstance().getTime()) + ".log");
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
