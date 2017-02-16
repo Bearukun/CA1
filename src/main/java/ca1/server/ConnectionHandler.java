@@ -100,7 +100,6 @@ public class ConnectionHandler implements Runnable {
 
                     case "MSG":
 
-                        System.out.println(message);
                         //Check if it's a private message
                         if (message.contains("#")) {
 
