@@ -47,7 +47,7 @@ public class ClientWritting implements Runnable{
     
     @Override
     public void run() {
-        
+
         //Test/Experiment of writting along the Reader class in the main class
 //        System.out.println("Writting Client - Hello there!");
 //        try {
@@ -72,7 +72,13 @@ public class ClientWritting implements Runnable{
 //        }
 //        } catch (InterruptedException ex) {
 //            Logger.getLogger(ClientWritting.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+//        }           
+
+// SendMessage - Old method
+//OutputStream output = clientSocket.getOutputStream();
+//        PrintWriter writer = new PrintWriter(output);
+//        writer.println(message);
+//        writer.flush();
     }
     
 }

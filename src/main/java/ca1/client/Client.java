@@ -58,7 +58,7 @@ public class Client extends Thread{
     //Start the Chat Client
     public static void main(String[] args) throws IOException {
 
-        
+        Client client = new Client("localhost", 8081);
         startClient();
         
         //OLD MANUEL CONNECTION WITH THE SERVER - Will not loop
@@ -91,20 +91,23 @@ public class Client extends Thread{
     }
     public static void startClient() {
         
-        
+        Client client = new Client("localhost", 8081);
         //Connection Setup
-//        try {
-//            clientSocket = new Socket();
-//            clientSocket.connect(new InetSocketAddress(host, port));
-//            System.out.println("Client connected to server on port " + port);
-//            
+        try {
+            clientSocket = new Socket();
+            clientSocket.connect(new InetSocketAddress(host, port));
+            System.out.println("Client connected to server on port " + port);
+            
+            
+            
+            
 //            //Experimenting with the launch of the 2 class Threads
             exec.execute(new ClientReading());
             exec.execute(new ClientWritting());
             
-//        } catch (IOException ex) {
-//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         
         
