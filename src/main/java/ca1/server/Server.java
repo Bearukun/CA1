@@ -46,6 +46,7 @@ public class Server {
     public static void main(String[] args) {
 
         Server server = new Server("localhost", 8081);
+        //Server server = new Server("10.50.137.212", 8081);
         server.startServer();
 
     }
@@ -72,6 +73,7 @@ public class Server {
 
             // Wait for a connection
             Socket connection;
+           
             while ((connection = socket.accept()) != null) {
 
                 es.execute(new ConnectionHandler(this, connection, logger));
