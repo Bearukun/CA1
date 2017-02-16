@@ -108,7 +108,7 @@ public class ConnectionHandler implements Runnable {
 
                             if (reciever.equals("ALL")) {
 
-                                server.messageEveryone(username, message);
+                                server.messageEveryone(username, privMessage);
 
                             } else {
 
