@@ -90,7 +90,7 @@ public class ConnectionHandler implements Runnable {
 
                             //Need to register user, and get list
                             writer.println("OK" + userList.substring(0, userList.length() - 1));
-                            
+
                             //Announce that the client has joined
                             server.announceNewUser(this);
 
@@ -100,17 +100,22 @@ public class ConnectionHandler implements Runnable {
 
                     case "MSG":
 
+                        System.out.println(message);
                         //Check if it's a private message
                         if (message.contains("#")) {
 
                             String reciever = message.substring(0, message.indexOf("#"));
                             String privMessage = message.substring(message.indexOf("#") + 1);
 
-                            server.massageUser(username, reciever, privMessage);
+                            if (reciever.equals("ALL")) {
 
-                        } else {
+                                server.messageEveryone(username, message);
 
-                            server.messageEveryone(username, message);
+                            } else {
+
+                                server.massageUser(username, reciever, privMessage);
+
+                            }
 
                         }
 
