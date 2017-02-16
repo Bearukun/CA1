@@ -46,8 +46,8 @@ public class ClientReading implements Runnable {
 
     /**
      *Constructor to receive the connection information.
-     * @param client Client
-     * @param clientConnection Socket
+     * @param client Takes a Client object.
+     * @param clientConnection Takes a Socket object and uses it to establish connection with a server.
      */
     public ClientReading(Client client, Socket clientConnection) {
         this.client = client;
@@ -56,7 +56,7 @@ public class ClientReading implements Runnable {
 
     /**
      *Method that reads from the server and to the user in the client.
-     * @return String
+     * @return String  Returns a string, which in this case is the message from the server to the client.
      * @throws IOException
      */
     public String readMessage() throws IOException {
@@ -70,6 +70,9 @@ public class ClientReading implements Runnable {
         return fromServer;
     }
 
+    /*
+    Implemented Runnable Thread
+    */
     @Override
     public void run() {
 
@@ -150,7 +153,8 @@ public class ClientReading implements Runnable {
     
     /**
      *Method that Welomes the user to the server and displays all currently online.
-     * @param message String
+     * @param message Takes a String to be displayed through SOUT. The String contains the username and 
+     * a list possible others online on the server
      */
     public synchronized void readingOK(String message){
         System.out.println("*****************************************************");
@@ -169,7 +173,8 @@ public class ClientReading implements Runnable {
     
     /**
      *Method that displays all the messages coming from the server to the client
-     * @param message String
+     * @param message Takes a String (message) to be split and presented as a message, with info on who 
+     * wrote the message and what it (the message) said.
      */
     public synchronized void chatReadAllMSG(String message){
         
@@ -188,7 +193,7 @@ public class ClientReading implements Runnable {
     
     /**
      * Method that tells the client if a new user has joined the server.
-     * @param message String
+     * @param message Takes a String to display who just logged in on the server.
      */
     public synchronized  void userJoinedServer(String message){
         System.out.println( "* " +  message + " has joined the server! *");
@@ -196,7 +201,7 @@ public class ClientReading implements Runnable {
     
     /**
      *Method that tells the client if a user has left/disconnected from the server.
-     * @param message String
+     * @param message Takes a String to display and show who left / disconnected from the server 
      */
     public synchronized void removedUser(String message){
         System.out.println("* " + message + " has disconnected from the server *");

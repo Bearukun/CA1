@@ -49,8 +49,8 @@ public class ClientWritting implements Runnable {
     /**
      * Constructor that recives the required connection information
      *
-     * @param client Client
-     * @param clientSocket Socket
+     * @param client Takes a Client object.
+     * @param clientConnection Takes a Socket object and uses it to establish connection with a server.
      */
     public ClientWritting(Client client, Socket clientSocket) {
         this.client = client;
@@ -61,7 +61,7 @@ public class ClientWritting implements Runnable {
      * Method that allows the user to send a message through the client and to
      * the server.
      *
-     * @param message String
+     * @param message Takes a String to be send to the server from the client.
      * @throws IOException
      */
     public void sendMessage(String message) throws IOException {
@@ -71,13 +71,18 @@ public class ClientWritting implements Runnable {
         writer.println(message);
         writer.flush();
     }
-
+ 
+    
+    /*
+    Implemented Runnable Thread
+    */
     @Override
     public void run() {
 
-        //while
+        
         try {
 
+            
             userName();
 
             while (active == true) {
