@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author
  */
-public class Client extends Thread{
+public class Client {
 
     
     //Objective
@@ -37,7 +37,7 @@ public class Client extends Thread{
     
     private static String host, userName, message, messageS;
     private static int port;
-    private static Socket clientSocket;
+    private Socket clientSocket;
     private static boolean active = true;
    
 
@@ -59,7 +59,7 @@ public class Client extends Thread{
     public static void main(String[] args) throws IOException {
 
         Client client = new Client("localhost", 8081);
-        startClient();
+        client.startClient();
         
         //OLD MANUEL CONNECTION WITH THE SERVER - Will not loop
         //ClientHandler ch = new ClientHandler();
@@ -89,21 +89,22 @@ public class Client extends Thread{
 //        }
 
     }
-    public static void startClient() {
+    public void startClient() {
         
-        Client client = new Client("localhost", 8081);
+        
         //Connection Setup
         try {
             clientSocket = new Socket();
             clientSocket.connect(new InetSocketAddress(host, port));
             System.out.println("Client connected to server on port " + port);
-            
+           
             
             
             
 //            //Experimenting with the launch of the 2 class Threads
-            exec.execute(new ClientReading());
-            exec.execute(new ClientWritting());
+            exec.execute(new ClientWritting(this, clientSocket));
+            exec.execute(new ClientReading(this, clientSocket));
+            
             
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,17 +113,7 @@ public class Client extends Thread{
         
         
     }
-    /*
-    Client Classes Thread 
-    */
-      @Override
-    public void run() {
-   
-        //To constantly read messages: Run a seperat thread, which only job is to read and write lines,
-        //as long as the connection is established and open?
-        //client.readMessage();
-        //client.sendMessage(*MESSAGE*);
-    }
+ 
 
 //    /**
     // OLD METHOD THAT WOULD SETUP AND ESTABLISH CONNECTION WITH THE SERVER!
@@ -143,13 +134,6 @@ public class Client extends Thread{
 //     * @param message String
 //     * @throws IOException
 //     */
-//    public static void sendMessage(String message) throws IOException {
-//        // Write to the server
-//        OutputStream output = clientSocket.getOutputStream();
-//        PrintWriter writer = new PrintWriter(output);
-//        writer.println(message);
-//        writer.flush();
-//    }
 
 //    /**
     //OLD METHOD THAT WOULD READMESSAGES THROUGH STREAM
@@ -158,17 +142,7 @@ public class Client extends Thread{
 //     * @return fromServer
 //     * @throws IOException
 //     */
-//    public static String readMessage() throws IOException {
-//        // Read from the server
-//        InputStream input = clientSocket.getInputStream();
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//        String fromServer;
-//        while ((fromServer = reader.readLine()) == null) {
-//
-//        }
-//        return fromServer;
-//    }
-    
+
     
 
     //Terminal GUI
