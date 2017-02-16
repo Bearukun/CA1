@@ -42,14 +42,28 @@ public class ClientWritting implements Runnable {
     private PrintWriter writer = null;
     private BufferedReader reader = null;
     private Scanner sca = new Scanner(System.in);
+    private String userName, msg;
 
     private boolean active = false;
 
+    /**
+     * Constructor that recives the required connection information
+     *
+     * @param client Client
+     * @param clientSocket Socket
+     */
     public ClientWritting(Client client, Socket clientSocket) {
         this.client = client;
         this.clientSocket = clientSocket;
     }
 
+    /**
+     * Method that allows the user to send a message through the client and to
+     * the server.
+     *
+     * @param message String
+     * @throws IOException
+     */
     public void sendMessage(String message) throws IOException {
         // Write to the server
         OutputStream output = clientSocket.getOutputStream();
@@ -64,51 +78,60 @@ public class ClientWritting implements Runnable {
         //while
         try {
 
-            
-                System.out.println("Enter Username: ");
-                String userName = sca.nextLine();
-                sendMessage("LOGIN#" + userName);
-                active = true;
+            userName();
 
-                while (active == true) {
-                    Thread.sleep(100);
-                    System.out.println("Enter Message: ");
-                    String msg = sca.nextLine();
-                    sendMessage("MSG#"+ userName +"#" + msg);
+            while (active == true) {
+                Thread.sleep(100);
+                System.out.println("Enter Message: ");
+                msg = sca.nextLine();
+                
+                //Needs method for handling private messages and messages for all users
+                // /w hanni besked
+                if (msg.contains("/w")) {
+               
                     
-//                    if (msg.contains("/w")) {
-//                        String[] splitString = msg.split("/w", 2);
-//                        String command = msg.substring(0, msg.indexOf("/w"));
-//                        String receiver = msg.substring(msg.indexOf(" ") + 1, msg.indexOf(" "));
-//                        
-//                        
-//                        sendMessage("MSG#[USER]#" + msg);
-//
-//                        
-//                        //Enter message: /w test whateveraaaaaaaa
-//                        
-//                    } else {
-//                        
-//                    sendMessage("MSG#[ALL]#" + msg);
-//
-//                        
-//                        
-//                    }
 
-                    if (msg.equalsIgnoreCase("QUIT")) {
+                } else {
+                    
+                    //Send to all users, inlcluding the senders name
+                    sendMessage("MSG#" + userName + "#" + msg);
+                    
+                    //Send message to all users, not including a user name.
+                    //sendMessage("MSG#ALL" + msg);
+                    
+                    
+                }
 
-                        active = false;
+                if (msg.equalsIgnoreCase("QUIT")) {
 
-                    }
+                    active = false;
 
                 }
-                
-                System.out.println("DISCONNECTED");
-            
+
+            }
+
+            System.out.println("DISCONNECTED");
 
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(ClientWritting.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Method that allows the user to input a user name
+     */
+    public synchronized void userName() {
+        try {
+            System.out.println("Enter Username: ");
+            //Awaits / Scans for the userinput
+            userName = sca.nextLine();
+            sendMessage("LOGIN#" + userName);
+            active = true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(ClientWritting.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 }

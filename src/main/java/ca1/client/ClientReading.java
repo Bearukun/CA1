@@ -44,11 +44,21 @@ public class ClientReading implements Runnable {
 
     private boolean active = false;
 
+    /**
+     *Constructor to receive the connection information.
+     * @param client Client
+     * @param clientConnection Socket
+     */
     public ClientReading(Client client, Socket clientConnection) {
         this.client = client;
         this.clientConnection = clientConnection;
     }
 
+    /**
+     *Method that reads from the server and to the user in the client.
+     * @return String
+     * @throws IOException
+     */
     public String readMessage() throws IOException {
         // Read from the server
         InputStream input = clientConnection.getInputStream();
@@ -79,22 +89,8 @@ public class ClientReading implements Runnable {
 
                         //Need to implement username check
                         //Need to register user, and get list
-                        System.out.println("*****************************************************");
-                        System.out.println("*               Welcome " + message + "               *");
-                        System.out.println("*****************************************************");
-
-//                    Cheat/easy way of displaying people online
-//                    String peopleOnline = message.replaceAll("#", " - ");
-//                    System.out.println("People currently online: " + peopleOnline);
-                        //Display people online / People Connected
-                        String[] splitStrings = message.split("#");
-                        System.out.println("*****************************************************");
-                        System.out.println("People currently online: ");
-                        for (int i = 0; i < splitStrings.length; i++) {
-                            System.out.println("*   " + splitStrings[i] + "   *");
-                        }
-                        System.out.println("*****************************************************");
-
+                        
+                        readingOK(message);
                         active = false;
                         break;
 
@@ -108,31 +104,32 @@ public class ClientReading implements Runnable {
 
                         System.out.println("Could not connect to Chat\n"
                                 + " Something could be wrong with the client or server, "
-                                + " or someone migt already be online with the selected User Name ");
-
+                                + " or someone migt already be online with the selected User Name");
+                        active = true;
                         break;
 
                     case "UPDATE":
 
-                        System.out.println("UPDATE ACTION");
+                        
+                        userJoinedServer(message);
+                        //System.out.println("UPDATE ACTION");
 
+                        active = false;
                         break;
 
                     case "DELETE":
 
-                        System.out.println("DELETE ACTION");
+                        removedUser(message);
+                        //System.out.println("DELETE ACTION");
 
+                        active = false;
+                        break; 
                     case "MSG":
+
+                      
+                        chatReadAllMSG(message);
                         
-
-                        String[] splitString1 = message.split("#");
-
-                        String whoWrote = message.substring(0, message.indexOf("#"));
-
-                        String theMessage = message.substring(message.indexOf("#") + 1);
-
-                        System.out.println(whoWrote + ": " + theMessage);
-
+                        active = false;
                         break;
 
                     default:
@@ -142,17 +139,66 @@ public class ClientReading implements Runnable {
 
                 }
                 System.out.println(msg);
-                
 
             }
-            System.out.println("Left the while loop!");
+            System.out.println("Left the ClientReading-while loop!\nRestart the client ");
 
-//Old (but still viable) skelet for reading input from the server
-//Needs to used for reading from the server
-//    while (active) {
-//
         } catch (IOException ex) {
             Logger.getLogger(ClientReading.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     *Method that Welomes the user to the server and displays all currently online.
+     * @param message String
+     */
+    public synchronized void readingOK(String message){
+        System.out.println("*****************************************************");
+                        System.out.println("*               Welcome " + message + "               *");
+                        System.out.println("*****************************************************");
+
+                        //Display people online / People Connected
+                        String[] splitStrings = message.split("#");
+                        System.out.println("*****************************************************");
+                        System.out.println("People online at login: ");
+                        for (int i = 0; i < splitStrings.length; i++) {
+                            System.out.println("*   " + splitStrings[i] + "   *");
+                        }
+                        System.out.println("*****************************************************");
+    }
+    
+    /**
+     *Method that displays all the messages coming from the server to the client
+     * @param message String
+     */
+    public synchronized void chatReadAllMSG(String message){
+        
+          String[] splitString1 = message.split("#");
+                        //Who wrote the message
+                        String whoWrote = message.substring(0, message.indexOf("#"));
+                        
+                        //What does the message say
+                        String theMessage = message.substring(message.indexOf("#") + 1);
+                        
+                        //Print writter and message
+                        System.out.println(whoWrote + ": " + theMessage);
+
+        
+    }
+    
+    /**
+     * Method that tells the client if a new user has joined the server.
+     * @param message String
+     */
+    public synchronized  void userJoinedServer(String message){
+        System.out.println( "* " +  message + " has joined the server! *");
+    }
+    
+    /**
+     *Method that tells the client if a user has left/disconnected from the server.
+     * @param message String
+     */
+    public synchronized void removedUser(String message){
+        System.out.println("* " + message + " has disconnected from the server *");
     }
 }
