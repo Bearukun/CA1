@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * Class that needs to allow the user to write / communicate with others on the
  * server
  */
-public class ClientWritting implements Runnable {
+public class ClientWriting implements Runnable {
 
     //Variables 'n stuff 
     private Client client;
@@ -34,7 +34,7 @@ public class ClientWritting implements Runnable {
      * @param clientConnection Takes a Socket object and uses it to establish
      * connection with a server.
      */
-    public ClientWritting(Client client, Socket clientSocket) {
+    public ClientWriting(Client client, Socket clientSocket) {
 
         this.client = client;
         this.clientSocket = clientSocket;
@@ -95,7 +95,7 @@ public class ClientWritting implements Runnable {
 
         } catch (IOException ex) {
             
-            Logger.getLogger(ClientWritting.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
             
         }
         
@@ -115,7 +115,7 @@ public class ClientWritting implements Runnable {
 
         } catch (IOException ex) {
             
-            Logger.getLogger(ClientWritting.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
             
         }
 

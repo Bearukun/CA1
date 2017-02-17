@@ -41,6 +41,8 @@ public class Client {
 
         Client client = new Client("46.101.255.231", 8081);
         client.startClient();
+        //46.101.255.231
+        //46.101.97.122
 
     }
 
@@ -58,7 +60,7 @@ public class Client {
             System.out.println("Client connected to server on port " + port);
 
             //Threads handling ClientWritter and ClientReading
-            exec.execute(new ClientWritting(this, clientSocket));
+            exec.execute(new ClientWriting(this, clientSocket));
             exec.execute(new ClientReading(this, clientSocket));
 
         } catch (IOException ex) {
