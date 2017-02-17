@@ -39,7 +39,7 @@ public class Client {
      */
     public static void main(String[] args) throws IOException {
 
-        Client client = new Client("localhost", 8081);
+        Client client = new Client("46.101.255.231", 8081);
         client.startClient();
 
     }
