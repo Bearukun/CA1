@@ -29,8 +29,9 @@ public class Server {
 
     /**
      * The constructor of the Server-class.
-     * @param host String defining on what IP the server will listen to. 
-     * @param port Integer defining the port-number. 
+     *
+     * @param host String defining on what IP the server will listen to.
+     * @param port Integer defining the port-number.
      */
     public Server(String host, int port) {
 
@@ -40,14 +41,29 @@ public class Server {
     }
 
     /**
-     * Main method, not much to be said. 
-     * @param args 
+     * Main method, not much to be said.
+     *
+     * @param args
      */
     public static void main(String[] args) {
 
-        Server server = new Server("localhost", 8081);
-        //Server server = new Server("10.50.137.212", 8081);
-        server.startServer();
+        try {
+
+            Server server = new Server(args[0], 8081);
+            //Server server = new Server("10.50.137.212", 8081);
+            server.startServer();
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+
+            System.out.println("Error, missing argument.\n\n"
+                    + "Syntax# \"javac Server [IP]\" Example: javac Server 110.120.130.140\n\n"
+                    + "Listening on localhost instead.");
+
+            Server server = new Server("localhost", 8081);
+            //Server server = new Server("10.50.137.212", 8081);
+            server.startServer();
+
+        }
 
     }
 
@@ -69,11 +85,11 @@ public class Server {
             // Bind to a port number
             socket.bind(new InetSocketAddress(host, port));
 
-            logger.info("Server started listenin on port" + port);
+            logger.info("Server started listening on port " + port + " on host: " + host +".");
 
             // Wait for a connection
             Socket connection;
-           
+
             while ((connection = socket.accept()) != null) {
 
                 es.execute(new ConnectionHandler(this, connection, logger));
@@ -135,8 +151,7 @@ public class Server {
     }
 
     /**
-     * Method to announce that a new user has joined the server,
-     * to all clients.
+     * Method to announce that a new user has joined the server, to all clients.
      *
      * @param connection The object of the new user.
      */
