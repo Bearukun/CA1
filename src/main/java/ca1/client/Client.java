@@ -3,12 +3,13 @@ package ca1.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client {
+public class Client extends Observable{
 
     //Variables
     private static ExecutorService exec = Executors.newFixedThreadPool(2);
