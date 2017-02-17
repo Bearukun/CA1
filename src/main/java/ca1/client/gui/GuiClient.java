@@ -6,17 +6,17 @@
 package ca1.client.gui;
 
 import ca1.client.Client;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
+import ca1.client.ClientReading;
+import ca1.client.ClientWritting;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
  * @author Hannibal
  */
-public class GuiClient extends javax.swing.JFrame {
+public class GuiClient extends javax.swing.JFrame implements ActionListener{
 
-    
     /**
      * Creates new form GuiClient
      */
@@ -40,18 +40,11 @@ public class GuiClient extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        msg_text.setText("jTextField1");
-        msg_text.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                msg_textActionPerformed(evt);
-            }
-        });
-
         msg_area.setColumns(20);
         msg_area.setRows(5);
         jScrollPane1.setViewportView(msg_area);
 
-        msg_send.setText("jButton1");
+        msg_send.setText("Send");
         msg_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msg_sendActionPerformed(evt);
@@ -65,12 +58,11 @@ public class GuiClient extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 4, Short.MAX_VALUE)
                         .addComponent(msg_text, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(msg_send)))
+                        .addComponent(msg_send, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -88,13 +80,8 @@ public class GuiClient extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void msg_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_textActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_msg_textActionPerformed
-
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
         // TODO add your handling code here:
-       
     }//GEN-LAST:event_msg_sendActionPerformed
 
     /**
@@ -131,7 +118,9 @@ public class GuiClient extends javax.swing.JFrame {
             }
         });
         Client cl = new Client("localhost",8081);
+        cl.startClient();
         
+           
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -140,4 +129,12 @@ public class GuiClient extends javax.swing.JFrame {
     private javax.swing.JButton msg_send;
     private javax.swing.JTextField msg_text;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    }
+   
+
 }

@@ -26,12 +26,11 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="4" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="402" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Component id="msg_text" min="-2" pref="315" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="msg_send" min="-2" max="-2" attributes="0"/>
+                      <Component id="msg_send" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -55,12 +54,6 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="msg_text">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msg_textActionPerformed"/>
-      </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
@@ -79,7 +72,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="msg_send">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jButton1"/>
+        <Property name="text" type="java.lang.String" value="Send"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msg_sendActionPerformed"/>
