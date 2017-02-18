@@ -9,6 +9,7 @@ package ca1.client.gui.view;
  *
  * @author Hannibal
  */
+import ca1.client.Client;
 import ca1.client.gui.control.GuiControl;
 import ca1.client.gui.model.GuiReader;
 import java.awt.event.KeyEvent;
@@ -211,9 +212,9 @@ public class GuiClient extends javax.swing.JFrame implements java.util.Observer 
                 cg.msg_text.requestFocus();
             }
         });
-
-        //msg_area.getText(cl.startClient);
-        //msg_area.append(cl.startClient());
+        Client client = new Client();
+        client.GuiOn();
+       
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
