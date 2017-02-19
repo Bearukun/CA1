@@ -100,7 +100,7 @@ public class ClientReading extends Observable implements Runnable {
                         //System.out.println("DELETE ACTION");
 
                         break;
-                        
+
                     case "MSG":
 
                         chatReadAllMSG(message);
@@ -114,15 +114,15 @@ public class ClientReading extends Observable implements Runnable {
                 }
 
             }
-            
+
             System.out.println("Left the ClientReading-while loop!\nRestart the client ");
 
         } catch (IOException ex) {
-            
+
             Logger.getLogger(ClientReading.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         }
-        
+
     }
 
     /**
@@ -133,7 +133,7 @@ public class ClientReading extends Observable implements Runnable {
      * contains the username and a list possible others online on the server
      */
     public synchronized void readingOK(String message) {
-        
+
         System.out.println("*****************************************************");
         System.out.println("*               Welcome                             *");
         System.out.println("*****************************************************");
@@ -149,21 +149,21 @@ public class ClientReading extends Observable implements Runnable {
         System.out.println("*****************************************************");
         setChanged();
         notifyObservers("*****************************************************");
-        
+
         setChanged();
         notifyObservers("*               Welcome                             *");
-        
+
         setChanged();
         notifyObservers("*****************************************************");
-        
+
         setChanged();
         notifyObservers("People online at login: ");
-        
+
         for (int i = 0; i < splitStrings.length; i++) {
             setChanged();
             notifyObservers("*   " + splitStrings[i] + "   *");
         }
-        
+
         setChanged();
         notifyObservers("*****************************************************");
     }
@@ -198,7 +198,7 @@ public class ClientReading extends Observable implements Runnable {
      * server.
      */
     public synchronized void userJoinedServer(String message) {
-        
+
         System.out.println("* " + message + " has joined the server! *");
         setChanged();
         notifyObservers("* " + message + " has joined the server! *");
@@ -214,11 +214,11 @@ public class ClientReading extends Observable implements Runnable {
      * from the server
      */
     public synchronized void removedUser(String message) {
-        
+
         System.out.println("* " + message + " has disconnected from the server *");
         setChanged();
         notifyObservers("* " + message + " has disconnected from the server *");
-        
+
         for (int i = 0; i < userList.size(); i++) {
 
             if (userList.get(i).equals(message)) {
@@ -231,12 +231,22 @@ public class ClientReading extends Observable implements Runnable {
 
     }
 
+    /**
+     * enables fetching of the list of logged in users
+     *
+     * @return an ArrayList of type String
+     */
     public ArrayList<String> getUserList() {
         return userList;
     }
 
+    /**
+     * method for retrieving the chat message transmitted
+     *
+     * @return a String
+     */
     public String getMessage() {
         return message;
     }
-    
+
 }

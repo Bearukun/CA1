@@ -85,7 +85,7 @@ public class Server {
             // Bind to a port number
             socket.bind(new InetSocketAddress(host, port));
 
-            logger.info("Server started listening on port " + port + " on host: " + host +".");
+            logger.info("Server started listening on port " + port + " on host: " + host + ".");
 
             // Wait for a connection
             Socket connection;

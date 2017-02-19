@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  * Class that needs to allow the user to write / communicate with others on the
  * server
  */
-public class ClientWriting extends Observable implements Runnable   {
+public class ClientWriting extends Observable implements Runnable {
 
     //Variables 'n stuff 
     private Client client;
@@ -29,19 +29,17 @@ public class ClientWriting extends Observable implements Runnable   {
     private BufferedReader reader = null;
     private Scanner sca = new Scanner(System.in);
     private String userName, msg;
-
     public static boolean active = false;
     public static boolean testing = false;
     private static boolean GuiOn = false;
     public static volatile boolean waitingForGuiInput = true;
-    int sleepCyclesCount = 0;
+    private int sleepCyclesCount = 0;
 
     /**
      * Constructor that recives the required connection information
      *
      * @param client Takes a Client object.
-     * @param clientConnection Takes a Socket object and uses it to establish
-     * connection with a server.
+     * @param clientSocket
      */
     public ClientWriting(Client client, Socket clientSocket) {
 
@@ -50,10 +48,12 @@ public class ClientWriting extends Observable implements Runnable   {
 
     }
 
+    /**
+     * Empty constructor
+     */
     public ClientWriting() {
     }
 
-    
     /**
      * Method that allows the user to send a message through the client and to
      * the server.
@@ -77,14 +77,14 @@ public class ClientWriting extends Observable implements Runnable   {
 
             output = clientSocket.getOutputStream();
             writer = new PrintWriter(output, true);
-            
+
             userName();
 
             while (active == true) {
-                    
-                if(!testing){
-                    if(GuiOn){
-                        while(waitingForGuiInput){
+
+                if (!testing) {
+                    if (GuiOn) {
+                        while (waitingForGuiInput) {
                             try {
                                 Thread.sleep(5);
                                 //System.out.println("sleeping "+sleepCyclesCount);
@@ -95,17 +95,15 @@ public class ClientWriting extends Observable implements Runnable   {
                             }
                         }
                     }
-                        if(GuiOn){
-                            msg = newGui.input;
-                        }
-                        else if(!GuiOn){
-                            msg = sca.nextLine();
-                        }
-                }
-                else if(testing){
+                    if (GuiOn) {
+                        msg = newGui.input;
+                    } else if (!GuiOn) {
+                        msg = sca.nextLine();
+                    }
+                } else if (testing) {
                     msg = "HiThere";
-                }    
-            
+                }
+
                 if (msg.contains("/whisper")) {
 
                     String[] split = msg.split(" ", 3);
@@ -118,13 +116,13 @@ public class ClientWriting extends Observable implements Runnable   {
 
                 } else if (msg.equalsIgnoreCase("/list")) {
 
-                } else if (msg!=null){
+                } else if (msg != null) {
                     //System.out.println("notnullmsg");
                     sendMessage("MSG#ALL#" + msg);
                     waitingForGuiInput = true;
-                    if(testing){
+                    if (testing) {
                         //tests.ChatTest.
-                        
+
                         active = false;
                     }
                 }
@@ -134,11 +132,11 @@ public class ClientWriting extends Observable implements Runnable   {
             System.out.println("DISCONNECTED");
 
         } catch (IOException ex) {
-            
+
             Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         }
-        
+
     }
 
     /**
@@ -146,16 +144,10 @@ public class ClientWriting extends Observable implements Runnable   {
      */
     public synchronized void userName() {
         try {
-            if(!testing){
+            if (!testing) {
                 System.out.println("Enter Username: ");
-                
+
             }
-            //Awaits / Scans for the userinput
-//            if(GuiOn){
-//                while(waitingForGuiInput){
-//                    //Thread.sleep(5);
-//                }
-//            }
             userName = sca.nextLine();
             sendMessage("LOGIN#" + userName);
             active = true;
@@ -163,20 +155,33 @@ public class ClientWriting extends Observable implements Runnable   {
             ex.printStackTrace();
             System.out.println("catch!!");
             //Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         }
 
     }
-    
-    public static void manualScanner(String input){
+
+    /**
+     * Method used for manually feeding the Scanner object a String
+     *
+     * @param input takes a String as input
+     */
+    public static void manualScanner(String input) {
         InputStream is = new ByteArrayInputStream(input.getBytes());
         System.setIn(is);
     }
-    
-    public static void GuiOn(){
+
+    /**
+     * method to toggle if GUI is being used for the chat session
+     */
+    public static void GuiOn() {
         GuiOn = true;
     }
 
+    /**
+     * method to check if GUI is being used for the chat session
+     *
+     * @return a boolean
+     */
     public static boolean isGuiOn() {
         return GuiOn;
     }

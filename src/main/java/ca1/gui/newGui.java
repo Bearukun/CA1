@@ -26,16 +26,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Hannibal
- */
-public class newGui extends javax.swing.JFrame implements Observer{
+public class newGui extends javax.swing.JFrame implements Observer {
 
     private OutputStream output = null;
     private PrintWriter writer = null;
     private BufferedReader reader = null;
     private String userName, msg;
+
     public static String input;
     private boolean active = false;
     private Client client;
@@ -43,6 +40,7 @@ public class newGui extends javax.swing.JFrame implements Observer{
     ClientReading clientreading;
     ClientWriting clientwriting;
     private int enterCounter = 0;
+
     /**
      * Creates new form newGui
      */
@@ -110,121 +108,50 @@ public class newGui extends javax.swing.JFrame implements Observer{
 
     private void EnterButtonPerformed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EnterButtonPerformed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if(enterCounter==0){
-                      input = jTextField1.getText();
-                        ClientWriting.manualScanner(input);
-                        //ClientWriting.manualScanner("hej");
-                        jTextField1.setText("");
-                        jLabel1.setVisible(false);
-                        //jTextArea1.append(input);
-                        //ClientWriting.waitingForGuiInput = false;
-                        //System.out.println(ClientWriting.waitingForGuiInput);
-
-
-                        exec = Executors.newFixedThreadPool(2);
-                    Socket clientSocket;
-
-                    try {
-
-                        clientSocket = new Socket();
-                        clientSocket.connect(new InetSocketAddress("46.101.255.231", 8081));
-                        //clientSocket.connect(new InetSocketAddress("localhost", 8081));
-
-                        //Threads handling ClientWritter and ClientReading
-                        ClientWriting.active = true;
-
-
-
-                        clientreading = new ClientReading(client, clientSocket);
-                        clientreading.addObserver(this);
-                        exec.execute(clientreading); 
-
-                        clientwriting = new ClientWriting(client, clientSocket);
-                        exec.execute(clientwriting);
-                        enterCounter++;
-                        //exec.shutdown();
-                          //  exec.awaitTermination(2,TimeUnit.SECONDS);
-                            /*
-                            switch(input){
-                            case "/whisper":{
-
-                            try{
-                            JOptionPane.showInputDialog("Type who you want to");
-                            }
-                            catch (Exception ex){    
-                            jTextArea1.setText("Something went wrong maybe you typed the wrong IP adress?");
-                            }
-                            break;
-                            }
-                            default:
-                            if (input.length() > 0) {
-                            try {
-                            client.sendMessage("MSG#" + "ALL" + "#" + input);
-                            } catch (Exception ex) {
-                            jTextArea1.setText("Something went wrong with sending message");
-                            }
-                            }
-                            break;
-                            }
-                            */
-
-
-            //            while (active == true) {
-            //
-            //
-            //                if (jTextField1.("/whisper")) {
-            //
-            //                    String[] split = jTextField1.split(" ", 3);
-            //
-            //                    sendMessage("MSG#" + split[1] + "#" + "[Private]" + split[2]);
-            //
-            //                } else if (jTextField1.equalsIgnoreCase("/quit")) {
-            //
-            //                    active = false;
-            //
-            //                } else if (jTextField1.equalsIgnoreCase("/list")) {
-            //
-            //                } else {
-            //
-            //                    sendMessage("MSG#ALL#" + jTextField1);
-            //
-            //                }
-            //
-            //            }
-            //
-            //            System.out.println("DISCONNECTED");
-            //
-            //        } catch (IOException ex) {
-            //            
-            //            Logger.getLogger(newGuiSender.class.getName()).log(Level.SEVERE, null, ex);
-            //            
-            //        }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            System.out.println("exception......");
-                        }
-            }
-            else if(enterCounter>0){
+            if (enterCounter == 0) {
                 input = jTextField1.getText();
-                //System.out.println(input);
                 ClientWriting.manualScanner(input);
-                        //ClientWriting.manualScanner("hej");
-                        jTextField1.setText("");
-                        ClientWriting.waitingForGuiInput = false;
+                //ClientWriting.manualScanner("hej");
+                jTextField1.setText("");
+                jLabel1.setVisible(false);
+                //jTextArea1.append(input);
+                //ClientWriting.waitingForGuiInput = false;
+                //System.out.println(ClientWriting.waitingForGuiInput);
+
+                exec = Executors.newFixedThreadPool(2);
+                Socket clientSocket;
+
+                try {
+
+                    clientSocket = new Socket();
+                    clientSocket.connect(new InetSocketAddress("46.101.255.231", 8081));
+                    //clientSocket.connect(new InetSocketAddress("localhost", 8081));
+
+                    //Threads handling ClientWritter and ClientReading
+                    ClientWriting.active = true;
+
+                    clientreading = new ClientReading(client, clientSocket);
+                    clientreading.addObserver(this);
+                    exec.execute(clientreading);
+
+                    clientwriting = new ClientWriting(client, clientSocket);
+                    exec.execute(clientwriting);
+                    enterCounter++;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.out.println("exception......");
+                }
+            } else if (enterCounter > 0) {
+                input = jTextField1.getText();
+                ClientWriting.manualScanner(input);
+                jTextField1.setText("");
+                ClientWriting.waitingForGuiInput = false;
             }
-            
-            
-            
-            
-            
-      
-        
+
         }
-        
+
     }//GEN-LAST:event_EnterButtonPerformed
-    
-    
-    
+
     /**
      * @param args the command line arguments
      */
@@ -263,19 +190,11 @@ public class newGui extends javax.swing.JFrame implements Observer{
         });
         Client client = new Client("46.101.255.231", 8081);
         //Client client = new Client("localhost", 8081);
-                      
+
         ClientWriting.GuiOn();
-        
-        
+
         //System.out.println(ClientWriting.isGuiOn());
         //Client client = new Client("localhost", 8081);
-        
-            
-   
-        
-        
-        
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -285,10 +204,9 @@ public class newGui extends javax.swing.JFrame implements Observer{
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-    
     @Override
     public void update(Observable o, Object arg) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        jTextArea1.append("\n"+arg.toString());
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jTextArea1.append("\n" + arg.toString());
     }
 }

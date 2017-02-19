@@ -1,6 +1,5 @@
 package ca1.client;
 
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -9,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client{
+public class Client {
 
     //Variables
     private static ExecutorService exec = Executors.newFixedThreadPool(2);
@@ -30,6 +29,7 @@ public class Client{
         this.port = port;
 
     }
+
     /**
      * Main Thread that launches a new instance of the client.
      *
@@ -39,12 +39,11 @@ public class Client{
     public static void main(String[] args) throws IOException {
         Client client = new Client("46.101.255.231", 8081);
         //Client client = new Client("localhost", 8081);
-     
+
         client.startClient();
-         
+
         //46.101.255.231
         //46.101.97.122
-
     }
 
     /**
@@ -70,11 +69,15 @@ public class Client{
 
         }
 
-    
-}
+    }
 
+    /**
+     * Used for Junit Testing purposes
+     *
+     * @return a ClientSocket
+     */
     public Socket getClientSocket() {
         return clientSocket;
     }
-    
+
 }
