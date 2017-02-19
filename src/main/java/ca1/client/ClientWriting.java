@@ -1,19 +1,24 @@
 package ca1.client;
 
+import ca1.gui.newGui;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Observable;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * Class that needs to allow the user to write / communicate with others on the
  * server
  */
-public class ClientWriting implements Runnable {
+public class ClientWriting extends Observable implements Runnable   {
 
     //Variables 'n stuff 
     private Client client;
@@ -25,7 +30,11 @@ public class ClientWriting implements Runnable {
     private Scanner sca = new Scanner(System.in);
     private String userName, msg;
 
-    private boolean active = false;
+    public static boolean active = false;
+    public static boolean testing = false;
+    private static boolean GuiOn = false;
+    public static volatile boolean waitingForGuiInput = true;
+    int sleepCyclesCount = 0;
 
     /**
      * Constructor that recives the required connection information
@@ -41,6 +50,10 @@ public class ClientWriting implements Runnable {
 
     }
 
+    public ClientWriting() {
+    }
+
+    
     /**
      * Method that allows the user to send a message through the client and to
      * the server.
@@ -64,29 +77,56 @@ public class ClientWriting implements Runnable {
 
             output = clientSocket.getOutputStream();
             writer = new PrintWriter(output, true);
-
+            
             userName();
 
             while (active == true) {
-
-                msg = sca.nextLine();
-
+                    
+                if(!testing){
+                    if(GuiOn){
+                        while(waitingForGuiInput){
+                            try {
+                                Thread.sleep(5);
+                                //System.out.println("sleeping "+sleepCyclesCount);
+                                //sleepCyclesCount++;
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                                System.out.println("sleep exception!!!!");
+                            }
+                        }
+                    }
+                        if(GuiOn){
+                            msg = newGui.input;
+                        }
+                        else if(!GuiOn){
+                            msg = sca.nextLine();
+                        }
+                }
+                else if(testing){
+                    msg = "HiThere";
+                }    
+            
                 if (msg.contains("/whisper")) {
 
                     String[] split = msg.split(" ", 3);
 
                     sendMessage("MSG#" + split[1] + "#" + "[Private]" + split[2]);
-
+                    waitingForGuiInput = true;
                 } else if (msg.equalsIgnoreCase("/quit")) {
 
                     active = false;
 
                 } else if (msg.equalsIgnoreCase("/list")) {
 
-                } else {
-
+                } else if (msg!=null){
+                    //System.out.println("notnullmsg");
                     sendMessage("MSG#ALL#" + msg);
-
+                    waitingForGuiInput = true;
+                    if(testing){
+                        //tests.ChatTest.
+                        
+                        active = false;
+                    }
                 }
 
             }
@@ -106,19 +146,38 @@ public class ClientWriting implements Runnable {
      */
     public synchronized void userName() {
         try {
-            
-            System.out.println("Enter Username: ");
+            if(!testing){
+                System.out.println("Enter Username: ");
+                
+            }
             //Awaits / Scans for the userinput
+//            if(GuiOn){
+//                while(waitingForGuiInput){
+//                    //Thread.sleep(5);
+//                }
+//            }
             userName = sca.nextLine();
             sendMessage("LOGIN#" + userName);
             active = true;
-
-        } catch (IOException ex) {
-            
-            Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("catch!!");
+            //Logger.getLogger(ClientWriting.class.getName()).log(Level.SEVERE, null, ex);
             
         }
 
     }
+    
+    public static void manualScanner(String input){
+        InputStream is = new ByteArrayInputStream(input.getBytes());
+        System.setIn(is);
+    }
+    
+    public static void GuiOn(){
+        GuiOn = true;
+    }
 
+    public static boolean isGuiOn() {
+        return GuiOn;
+    }
 }

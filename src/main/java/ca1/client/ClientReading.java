@@ -8,18 +8,19 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Class that needs to allow the user to see and read from the server
  */
-public class ClientReading implements Runnable {
+public class ClientReading extends Observable implements Runnable {
 
     //Variables
     private Client client;
     private Socket clientConnection;
-    private String msg;
+    private String message;
 
     private InputStream input;
     private OutputStream output = null;
@@ -60,7 +61,7 @@ public class ClientReading implements Runnable {
                 String msg = reader.readLine();
 
                 String command = msg.substring(0, msg.indexOf("#"));
-                String message = msg.substring(msg.indexOf("#") + 1);
+                message = msg.substring(msg.indexOf("#") + 1);
 
                 switch (command) {
 
@@ -146,6 +147,25 @@ public class ClientReading implements Runnable {
             userList.add(splitStrings[i]);
         }
         System.out.println("*****************************************************");
+        setChanged();
+        notifyObservers("*****************************************************");
+        
+        setChanged();
+        notifyObservers("*               Welcome                             *");
+        
+        setChanged();
+        notifyObservers("*****************************************************");
+        
+        setChanged();
+        notifyObservers("People online at login: ");
+        
+        for (int i = 0; i < splitStrings.length; i++) {
+            setChanged();
+            notifyObservers("*   " + splitStrings[i] + "   *");
+        }
+        
+        setChanged();
+        notifyObservers("*****************************************************");
     }
 
     /**
@@ -166,6 +186,8 @@ public class ClientReading implements Runnable {
 
         //Print writter and message
         System.out.println(whoWrote + ": " + theMessage);
+        setChanged();
+        notifyObservers(whoWrote + ": " + theMessage);
 
     }
 
@@ -178,6 +200,8 @@ public class ClientReading implements Runnable {
     public synchronized void userJoinedServer(String message) {
         
         System.out.println("* " + message + " has joined the server! *");
+        setChanged();
+        notifyObservers("* " + message + " has joined the server! *");
         userList.add(message);
 
     }
@@ -192,7 +216,9 @@ public class ClientReading implements Runnable {
     public synchronized void removedUser(String message) {
         
         System.out.println("* " + message + " has disconnected from the server *");
-
+        setChanged();
+        notifyObservers("* " + message + " has disconnected from the server *");
+        
         for (int i = 0; i < userList.size(); i++) {
 
             if (userList.get(i).equals(message)) {
@@ -203,6 +229,14 @@ public class ClientReading implements Runnable {
 
         }
 
+    }
+
+    public ArrayList<String> getUserList() {
+        return userList;
+    }
+
+    public String getMessage() {
+        return message;
     }
     
 }
